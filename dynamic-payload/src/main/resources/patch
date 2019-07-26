@@ -1,0 +1,66 @@
+diff --git a/solr/core/src/java/org/apache/solr/search/PayloadCheckQParserPlugin.java b/solr/core/src/java/org/apache/solr/search/PayloadCheckQParserPlugin.java
+index e5702bf..95211a1 100644
+--- a/solr/core/src/java/org/apache/solr/search/PayloadCheckQParserPlugin.java
++++ b/solr/core/src/java/org/apache/solr/search/PayloadCheckQParserPlugin.java
+@@ -27,9 +27,11 @@ import org.apache.lucene.analysis.payloads.FloatEncoder;
+ import org.apache.lucene.analysis.payloads.IdentityEncoder;
+ import org.apache.lucene.analysis.payloads.IntegerEncoder;
+ import org.apache.lucene.analysis.payloads.PayloadEncoder;
++import org.apache.lucene.queries.payloads.PayloadDecoder;
+ import org.apache.lucene.queries.payloads.SpanPayloadCheckQuery;
+ import org.apache.lucene.search.Query;
+ import org.apache.lucene.search.spans.SpanQuery;
++import org.apache.lucene.util.ArrayUtil;
+ import org.apache.lucene.util.BytesRef;
+ import org.apache.solr.common.SolrException;
+ import org.apache.solr.common.params.SolrParams;
+@@ -87,6 +89,23 @@ public class PayloadCheckQParserPlugin extends QParserPlugin {
+           encoder = new IntegerEncoder();
+         } else if ("identity".equals(e)) {
+           encoder = new IdentityEncoder();
++        } else if ("byte".equals(e)) {
++          encoder = new PayloadEncoder(){
++
++            @Override
++            public BytesRef encode(char[] buffer) {
++              int payload = ArrayUtil.parseInt(buffer,0,buffer.length);
++              byte [] array = {(byte)payload};
++              return new BytesRef(array);
++            }
++
++            @Override
++            public BytesRef encode(char[] buffer, int offset, int length) {
++              int payload = ArrayUtil.parseInt(buffer,offset,length);
++              byte [] array = {(byte)payload};
++              return new BytesRef(array);
++            }
++          };
+         }
+ 
+         if (encoder == null) {
+diff --git a/solr/core/src/java/org/apache/solr/util/PayloadUtils.java b/solr/core/src/java/org/apache/solr/util/PayloadUtils.java
+index 2e404df..57af4a3 100644
+--- a/solr/core/src/java/org/apache/solr/util/PayloadUtils.java
++++ b/solr/core/src/java/org/apache/solr/util/PayloadUtils.java
+@@ -65,6 +65,10 @@ public class PayloadUtils {
+           encoder = "float";
+           break;
+         }
++
++        if (factory.getOriginalArgs().containsKey("encoder")) {
++          return factory.getOriginalArgs().get("encoder");
++        }
+       }
+     }
+ 
+@@ -83,7 +87,9 @@ public class PayloadUtils {
+       decoder = (BytesRef payload) -> payload == null ? 1 : PayloadHelper.decodeFloat(payload.bytes, payload.offset);
+     }
+     // encoder could be "identity" at this point, in the case of DelimitedTokenFilterFactory encoder="identity"
+-
++    if ("byte".equals(encoder)) {
++      return PayloadDecoder.FLOAT_DECODER;
++    }
+     // TODO: support pluggable payload decoders?
+ 
+     return decoder;
