@@ -1,4 +1,5 @@
 rootProject.name = 'apache-solr-plugins'
 include 'dynamic-payload'
 include 'zh-converter'
+include 'customized-codec'
 
