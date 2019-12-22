@@ -1,4 +1,4 @@
-!/bin/bash
+#!/usr/bin/env bash
 #download solr-7.7.2 from https://lucene.apache.org/solr/
 echo "start download solr-7.7.2 from https://lucene.apache.org/solr/"
 curl "http://mirror.bit.edu.cn/apache/lucene/solr/7.7.2/solr-7.7.2.tgz" -o solr-7.7.2.tgz
