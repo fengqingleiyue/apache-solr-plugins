@@ -15,12 +15,19 @@ dependencies {
     compile group: 'org.apache.lucene', name: 'lucene-core', version: '7.7.2'
 }
 
+sourceSets {
+    main {
+        resources { exclude '**/solr_home' }
+    }
+}
+
 jar {
     manifestContentCharset 'utf-8'
     metadataCharset 'utf-8'
     manifest {
         attributes "Main-Class": 'org.fql.codec.index.IndexPatentData'
     }
+
     if (project.hasProperty("allInOne")) {
         from {
             configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }

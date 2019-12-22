@@ -169,12 +169,12 @@ public class IndexPatentData {
             }
             SolrInputDocument document = new SolrInputDocument();
             document.setField("id",dataArray[0]);
-            document.setField("type",dataArray[1]);
             document.setField("country",dataArray[3]);
             document.setField("date",Integer.valueOf(dataArray[4].replaceAll("-","")));
             document.setField("abstract",dataArray[5]);
             document.setField("title",dataArray[6]);
             document.setField("kind",dataArray[7]);
+            document.setField("type",dataArray[1]);
             return document;
         }
 
