@@ -17,7 +17,7 @@ dependencies {
 
 sourceSets {
     main {
-        resources { exclude '**/solr_home' }
+        resources { exclude '**/demo' }
     }
 }
 
