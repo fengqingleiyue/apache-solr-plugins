@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
-    compile group: 'org.apache.lucene', name: 'lucene-analyzers-common', version: '7.7.2'
+    compile group: 'org.apache.lucene', name: 'lucene-analyzers-common', version: '7.7.3'
     compile group: 'com.carrotsearch', name: 'hppc', version: '0.8.1'
 }
 
