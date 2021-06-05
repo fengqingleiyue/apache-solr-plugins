@@ -4,12 +4,7 @@ import org.apache.lucene.index.BinaryDocValues;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.Explanation;
-import org.apache.lucene.search.FilterScorer;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Scorer;
-import org.apache.lucene.search.Weight;
+import org.apache.lucene.search.*;
 import org.apache.lucene.util.BytesRef;
 
 import java.io.IOException;
@@ -24,17 +19,21 @@ public class VectorQuery extends Query {
     /**
      * main query , find the docids that used to calculate the vector score
      */
-    private Query query;
+    protected Query query;
 
     /**
      * the vector that used to do cosine operation
      */
-    private float [] targetVector;
+    private final float [] targetVector;
 
     /**
      * specify the field name which used to get the vectors
      */
-    private String vectorField;
+    private final String vectorField;
+
+    /**
+     * java SMID vector api
+     */
 
     /**
      * @param query
@@ -157,11 +156,11 @@ public class VectorQuery extends Query {
          * @param array
          * @return
          */
-        private float computeScore(float [] array)
-        {
+        private float computeScore(float [] array){
             float l2 = 0.0f;
             for (int i = 0; i < this.query.targetVector.length; i++) {
-                l2 += Math.pow(array[i] - this.query.targetVector[i], 2.0D);
+                float tmp = array[i] - this.query.targetVector[i];
+                l2 += tmp*tmp;
             }
             return 1.0F / (1.0F + l2);
         }

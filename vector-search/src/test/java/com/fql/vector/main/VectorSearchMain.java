@@ -24,7 +24,7 @@ import java.util.List;
 public class VectorSearchMain {
 
 
-    private static class Vector{
+    protected static class Vector{
 
         @SerializedName("image_path")
         private String imagePath;
