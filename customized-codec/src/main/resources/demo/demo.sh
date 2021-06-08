@@ -4,10 +4,10 @@ echo "start download solr-7.7.2 from https://lucene.apache.org/solr/"
 curl "http://mirror.bit.edu.cn/apache/lucene/solr/7.7.2/solr-7.7.2.tgz" -o solr-7.7.2.tgz
 tar -xvf solr-7.7.2.tgz
 echo "start prepare the jar files"
-#set up solr (we use gradle to build the package , please make sure you already install it, the version we use in the demo is 4.10.1 https://downloads.gradle-dn.com/distributions/gradle-4.10.1-bin.zip)
-cd ../../../../ && gradle clean jar && rm -rf src/main/resources/demo/solr_home/lib && mkdir src/main/resources/demo/solr_home/lib && cp build/libs/customized-codec-1.0-SNAPSHOT.jar src/main/resources/demo/solr_home/lib
+#set up solr (we use mvn to build the package , please make sure you already install it)
+cd ../../../../ && mvn clean package && rm -rf src/main/resources/demo/solr_home/lib && mkdir src/main/resources/demo/solr_home/lib && cp target/customized-codec-1.0-SNAPSHOT.jar src/main/resources/demo/solr_home/lib
 # build the index jar
-gradle -PallInOne clean jar && rm -rf src/main/resources/demo/*.jar && cp build/libs/customized-codec-1.0-SNAPSHOT.jar src/main/resources/demo/
+mvn clean assembly:single && rm -rf src/main/resources/demo/*.jar && cp target/customized-codec-1.0-SNAPSHOT-jar-with-dependencies.jar src/main/resources/demo/customized-codec-1.0-SNAPSHOT.jar
 # start download the data file
 echo "start download the data file"
 cd src/main/resources/demo/ && curl "http://s3.amazonaws.com/data.patentsview.org/20191008/download/patent.tsv.zip" -o patent.tsv.zip && unzip patent.tsv.zip && mv 20*/download/patent.tsv ./patent.tsv && rm -rf 20* patent.tsv.zip
